@@ -13,7 +13,15 @@ app.use(express.json());
 
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
+  .then(async () => {
+    console.log("MongoDB Connected");
+    try {
+      await mongoose.connection.db.collection('reports').createIndex({ cameraType: 1, createdAt: -1 });
+      console.log("Database index verified and ready.");
+    } catch (err) {
+      console.error("Could not create index:", err);
+    }
+  })
   .catch((err) => console.log(err));
 
 app.use("/api/reports", reportsRoutes);

@@ -8,8 +8,8 @@ router.get("/", async (req, res) => {
     
     const { sort = 'desc', page = 1, limit = 1000, cameraType } = req.query;
     const sortOrder = sort === 'asc' ? 1 : -1;
-    const pageNum = parseInt(page) || 1;
-    const limitNum = parseInt(limit) || 1000;
+    const pageNum = Math.max(1, parseInt(page) || 1);
+    const limitNum = Math.min(2000, Math.max(1, parseInt(limit) || 1000));
     const skip = (pageNum - 1) * limitNum;
 
     const query = {};
