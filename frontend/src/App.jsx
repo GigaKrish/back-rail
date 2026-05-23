@@ -258,7 +258,7 @@ function CameraTable({ type, sortOrder, overviewReports, onEvidence }) {
   return (
     <div className="camera-block">
       <div className={`table-header th-${cfg.key}`}>
-        <div className="th-left">
+        <div className="th-left" style={{ flex: 1 }}>
           <div className="cam-icon" style={{ background: `rgba(${hexToRgb(cfg.color)},0.1)`, border: `1px solid rgba(${hexToRgb(cfg.color)},0.25)` }}>
             <img src={`/${cfg.key}.png`} alt={type} style={{ width: 26, height: 26, objectFit: 'contain' }}
               onError={e => { e.target.style.display='none'; e.target.parentNode.innerHTML = cfg.emoji }} />
@@ -268,7 +268,32 @@ function CameraTable({ type, sortOrder, overviewReports, onEvidence }) {
             <div className="cam-subtitle">Surveillance System · CCTV</div>
           </div>
         </div>
-        <div className="th-right">
+
+        {totalPages > 1 && (
+          <div className="th-center" style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 16 }}>
+            <button 
+              style={{ padding: '6px 16px', background: '#ffffff', border: `1px solid rgba(${hexToRgb(cfg.color)}, 0.3)`, borderRadius: 6, color: cfg.color, cursor: page === 1 ? 'not-allowed' : 'pointer', opacity: page === 1 ? 0.5 : 1, fontSize: 12, fontWeight: 700, letterSpacing: 1, transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
+              disabled={page === 1} 
+              onClick={() => setPage(p => p - 1)}
+            >
+              PREV
+            </button>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ fontSize: 14, color: 'var(--white)', fontWeight: 700, letterSpacing: 1, fontFamily: 'Space Mono, monospace' }}>PAGE {page} <span style={{ color: 'var(--muted)', fontWeight: 500 }}>/ {totalPages}</span></span>
+              <span style={{ fontSize: 10, color: 'var(--muted)', letterSpacing: 1, textTransform: 'uppercase', marginTop: 2 }}>Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, total)} of {total}</span>
+            </div>
+            <button 
+              style={{ padding: '6px 16px', background: '#ffffff', border: `1px solid rgba(${hexToRgb(cfg.color)}, 0.3)`, borderRadius: 6, color: cfg.color, cursor: page === totalPages ? 'not-allowed' : 'pointer', opacity: page === totalPages ? 0.5 : 1, fontSize: 12, fontWeight: 700, letterSpacing: 1, transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
+              disabled={page === totalPages} 
+              onClick={() => setPage(p => p + 1)}
+            >
+              NEXT
+            </button>
+          </div>
+        )}
+        {!totalPages || totalPages <= 1 ? <div style={{ flex: 1 }} /> : null}
+
+        <div className="th-right" style={{ flex: 1, textAlign: 'right' }}>
           <div className="total-label">Total Units</div>
           <div className="total-count" style={{ color: cfg.color }}>{total}</div>
         </div>
@@ -311,32 +336,6 @@ function CameraTable({ type, sortOrder, overviewReports, onEvidence }) {
                 </div>
               </td>
             </tr>
-            {totalPages > 1 && (
-              <tr className="pagination-row">
-                <td colSpan={7} style={{ padding: 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', background: 'rgba(0,0,0,0.02)' }}>
-                    <span style={{ fontSize: 13, color: 'var(--muted)' }}>Showing {(page - 1) * pageSize + 1} - {Math.min(page * pageSize, total)} of {total}</span>
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      <button 
-                        style={{ padding: '6px 12px', background: '#fff', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--accent)', cursor: page === 1 ? 'not-allowed' : 'pointer', opacity: page === 1 ? 0.5 : 1, fontSize: 12, fontWeight: 600 }}
-                        disabled={page === 1} 
-                        onClick={() => setPage(p => p - 1)}
-                      >
-                        PREV
-                      </button>
-                      <div style={{ display: 'flex', alignItems: 'center', fontSize: 13, padding: '0 8px', color: 'var(--muted)', fontWeight: 600 }}>{page} / {totalPages}</div>
-                      <button 
-                        style={{ padding: '6px 12px', background: '#fff', border: '1px solid var(--border)', borderRadius: 4, color: 'var(--accent)', cursor: page === totalPages ? 'not-allowed' : 'pointer', opacity: page === totalPages ? 0.5 : 1, fontSize: 12, fontWeight: 600 }}
-                        disabled={page === totalPages} 
-                        onClick={() => setPage(p => p + 1)}
-                      >
-                        NEXT
-                      </button>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            )}
           </tbody>
         </table>
       </div>
