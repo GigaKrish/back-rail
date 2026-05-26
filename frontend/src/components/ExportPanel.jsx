@@ -57,7 +57,7 @@ export default function ExportPanel({ reports }) {
           return [
             r.unique_id || '-',
             r.resourceId || '-',
-            `${r.location?.latitude?.toFixed(5) || '-'}, ${r.location?.longitude?.toFixed(5) || '-'}`,
+            `${r.location?.latitude || '-'}, ${r.location?.longitude || '-'}`,
             `±${mToCm(r.accuracy ?? 0)} cm`,
             `${date} ${time}`,
             r.remark || '-',
@@ -152,6 +152,8 @@ export default function ExportPanel({ reports }) {
           <b>Resource ID:</b> ${r.resourceId || '-'}<br/>
           <b>Camera Type:</b> ${r.cameraType || '-'}<br/>
           <b>Date/Time:</b> ${date} ${time}<br/>
+          <b>Latitude:</b> ${r.location?.latitude || '-'}<br/>
+          <b>Longitude:</b> ${r.location?.longitude || '-'}<br/>
           <b>Control Value:</b> ±${mToCm(r.accuracy ?? 0)} cm<br/>
           <b>Remark:</b> ${r.remark || '-'}<br/>
         `;
