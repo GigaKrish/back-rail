@@ -346,11 +346,7 @@ tbody td {
   color: var(--muted);
 }
 
-/* .cv-bar-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-} */
+
 
 .cv-val {
   font-family: 'Space Mono', monospace;
@@ -358,14 +354,6 @@ tbody td {
   min-width: 60px;
   color: var(--white);
 }
-
-/* .cv-bar {
-  width: 60px;
-  height: 4px;
-  background: var(--steel);
-  border-radius: 2px;
-  overflow: hidden;
-} */
 
 .cv-fill {
   height: 100%;
@@ -551,16 +539,7 @@ tbody td {
   border: 1px solid var(--border);
   display: block;
 }
-/* .modal-box {
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px;
-  max-width: 500px;
-  width: 90%;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-  animation: slideUp 0.3s ease;
-} */
+
 
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(20px) scale(0.97); }
@@ -590,14 +569,7 @@ tbody td {
 
 .modal-close:hover { color: var(--white); }
 
-/* .modal-img {
-  width: 100%;
-  border-radius: 8px;
-  object-fit: cover;
-  max-height: 300px;
-  background: var(--steel);
-  border: 1px solid var(--border);
-} */
+
 
 .modal-img-placeholder {
   width: 100%;
@@ -649,13 +621,7 @@ tbody td {
   to { transform: rotate(360deg); }
 }
 
-.error-msg {
-  text-align: center;
-  padding: 48px;
-  color: var(--bullet);
-  font-family: 'Space Mono', monospace;
-  font-size: 13px;
-}
+
 
 /* Leaflet overrides */
 .leaflet-container {
