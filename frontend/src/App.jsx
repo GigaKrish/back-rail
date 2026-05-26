@@ -7,6 +7,7 @@ import SummaryTable from './components/SummaryTable'
 import CameraTable from './components/CameraTable'
 import MapView from './components/MapView'
 import EvidenceModal from './components/EvidenceModal'
+import ExportPanel from './components/ExportPanel'
 
 export default function App() {
   const [reports, setReports]   = useState([])
@@ -67,6 +68,11 @@ export default function App() {
           </div>
         ) : (
           <>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <h2 style={{ fontSize: 18, color: 'var(--text)', margin: 0, fontWeight: 700 }}>Data Management & Export</h2>
+            </div>
+            <ExportPanel />
+
             {/* ── 3-Row Summary Table ── */}
             <SummaryTable byType={byType} totalStd={totalStd} totalX={totalX} totalAll={reports.length} />
 

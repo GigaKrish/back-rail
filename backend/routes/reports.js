@@ -64,4 +64,35 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/export", async (req, res) => {
+  try {
+    const db = mongoose.connection.db;
+    const { startDate, endDate } = req.query;
+
+    const query = {};
+    if (startDate || endDate) {
+      query.createdAt = {};
+      if (startDate) query.createdAt.$gte = new Date(startDate);
+      if (endDate) query.createdAt.$lte = new Date(endDate);
+    }
+
+    const collection = db.collection("reports");
+    const reports = await collection
+      .find(query)
+      .sort({ cameraType: 1, createdAt: -1 })
+      .toArray();
+
+    res.json({
+      success: true,
+      data: reports,
+    });
+  } catch (error) {
+    console.error("GET /api/reports/export error:", error.message);
+    res.status(500).json({
+      success: false,
+      error: "Internal server error",
+    });
+  }
+});
+
 module.exports = router;
