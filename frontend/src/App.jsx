@@ -17,7 +17,7 @@ export default function App() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/reports?sort=${sortOrder}&limit=2000`)
+    fetch(`/api/reports?sort=${sortOrder}&limit=100000`)
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json() })
       .then(data => {
         const arr = Array.isArray(data) ? data : (data.data || data.reports || [])
@@ -43,16 +43,20 @@ export default function App() {
 
   return (
     <>
-      <header className="header">
+      <header className="header" style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div className="header-logo">
           <img src="/tteg.png" alt="TTEG Logo" className="logo-img"
             onError={e => { e.target.style.display='none'; e.target.nextSibling.style.display='flex' }} />
-          <div style={{ display:'none', alignItems:'center', justifyContent:'center', width:48, height:48, background:'rgba(0,102,204,0.1)', border:'1px solid rgba(0,102,204,0.25)', borderRadius:8, fontSize:22 }}>📡</div>
           <div>
             <div className="logo-text">TTEG</div>
             <div style={{ fontSize:9, letterSpacing:3, color:'var(--muted)', textTransform:'uppercase' }}>Surveillance Report</div>
           </div>
         </div>
+
+        <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+          <ExportPanel reports={reports} />
+        </div>
+
         <div className="header-brand">
           <div className="brand-main">Danapur Railway Station</div>
           <div className="brand-sub">Patna · Bihar · Indian Railways</div>
@@ -68,11 +72,6 @@ export default function App() {
           </div>
         ) : (
           <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-              <h2 style={{ fontSize: 18, color: 'var(--text)', margin: 0, fontWeight: 700 }}>Data Management & Export</h2>
-            </div>
-            <ExportPanel />
-
             {/* ── 3-Row Summary Table ── */}
             <SummaryTable byType={byType} totalStd={totalStd} totalX={totalX} totalAll={reports.length} />
 

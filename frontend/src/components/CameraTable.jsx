@@ -1,39 +1,24 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { CAM_CONFIG, MOCK_DATA } from '../config'
 import CameraRow from './CameraRow'
 
 export default function CameraTable({ type, sortOrder, overviewReports, onEvidence }) {
-  const [reports, setReports] = useState([]);
-  const [page, setPage] = useState(1);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
   const [isExpanded, setIsExpanded] = useState(false);
-  const pageSize = 30;
   
-  useEffect(() => { setPage(1) }, [sortOrder]);
+  const reports = useMemo(() => {
+    if (!overviewReports) return [];
+    return [...overviewReports].sort((a, b) => {
+      const d1 = new Date(a.createdAt).getTime();
+      const d2 = new Date(b.createdAt).getTime();
+      return sortOrder === 'asc' ? d1 - d2 : d2 - d1;
+    });
+  }, [overviewReports, sortOrder]);
 
-  useEffect(() => {
-    setLoading(true);
-    fetch(`/api/reports?sort=${sortOrder}&page=${page}&limit=${pageSize}&cameraType=${encodeURIComponent(type)}`)
-      .then(r => r.json())
-      .then(res => {
-         const arr = Array.isArray(res) ? res : (res.data || []);
-         setReports(arr);
-         setTotal(res.total || arr.length);
-      })
-      .catch(() => {
-         console.warn('API unavailable for table — using mock data')
-         const mockForType = MOCK_DATA.filter(r => r.cameraType === type);
-         setReports(mockForType.slice((page-1)*pageSize, page*pageSize));
-         setTotal(mockForType.length);
-      })
-      .finally(() => setLoading(false));
-  }, [type, sortOrder, page]);
+  const total = reports.length;
 
   const cfg = CAM_CONFIG[type]
   if (!overviewReports || overviewReports.length === 0) return null
 
-  const totalPages = Math.ceil(total / pageSize) || 1;
   const normal = reports.filter(r => !r.resourceId?.toUpperCase().startsWith('X'))
   const xGroup = reports.filter(r => r.resourceId?.toUpperCase().startsWith('X'))
   const avgAccCm = useMemo(() => (overviewReports.reduce((s, r) => s + (r.accuracy ?? 0), 0) / (overviewReports.length || 1) * 100).toFixed(2), [overviewReports])
@@ -55,29 +40,7 @@ export default function CameraTable({ type, sortOrder, overviewReports, onEviden
           </div>
         </div>
 
-        {totalPages > 1 && (
-          <div className="th-center" style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 16 }}>
-            <button 
-              style={{ padding: '6px 16px', background: '#ffffff', border: `1px solid rgba(${cfg.rgb}, 0.3)`, borderRadius: 6, color: cfg.color, cursor: page === 1 ? 'not-allowed' : 'pointer', opacity: page === 1 ? 0.5 : 1, fontSize: 12, fontWeight: 700, letterSpacing: 1, transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
-              disabled={page === 1} 
-              onClick={() => setPage(p => p - 1)}
-            >
-              PREV
-            </button>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ fontSize: 14, color: 'var(--white)', fontWeight: 700, letterSpacing: 1, fontFamily: 'Space Mono, monospace' }}>PAGE {page} <span style={{ color: 'var(--muted)', fontWeight: 500 }}>/ {totalPages}</span></span>
-              <span style={{ fontSize: 10, color: 'var(--muted)', letterSpacing: 1, textTransform: 'uppercase', marginTop: 2 }}>Showing {(page - 1) * pageSize + 1}-{Math.min(page * pageSize, total)} of {total}</span>
-            </div>
-            <button 
-              style={{ padding: '6px 16px', background: '#ffffff', border: `1px solid rgba(${cfg.rgb}, 0.3)`, borderRadius: 6, color: cfg.color, cursor: page === totalPages ? 'not-allowed' : 'pointer', opacity: page === totalPages ? 0.5 : 1, fontSize: 12, fontWeight: 700, letterSpacing: 1, transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}
-              disabled={page === totalPages} 
-              onClick={() => setPage(p => p + 1)}
-            >
-              NEXT
-            </button>
-          </div>
-        )}
-        {!totalPages || totalPages <= 1 ? <div style={{ flex: 1 }} /> : null}
+        <div className="th-center" style={{ flex: 1 }}></div>
 
         <div className="th-right" style={{ flex: 1, textAlign: 'right' }}>
           <div className="total-label">Total Units</div>

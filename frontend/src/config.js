@@ -18,7 +18,7 @@ export function makeShapeIcon(color, shape) {
   if (shape === 'circle') {
     svgPath = `<circle cx="8" cy="8" r="7" fill="${color}" stroke="white" stroke-width="1.5" />`;
   } else if (shape === 'square') {
-    svgPath = `<rect x="1" y="1" width="14" height="14" rx="2" fill="${color}" stroke="white" stroke-width="1.5" />`;
+    svgPath = `<rect x="3" y="3" width="10" height="10" rx="1.5" fill="${color}" stroke="white" stroke-width="1.2" />`;
   } else if (shape === 'triangle') {
     svgPath = `<polygon points="8,1 15,14 1,14" fill="${color}" stroke="white" stroke-width="1.5" stroke-linejoin="round" />`;
   } else if (shape === 'diamond') {

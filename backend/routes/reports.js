@@ -9,19 +9,17 @@ const VALID_CAMERA_TYPES = new Set([
   "Dome Camera",
 ]);
 
-// Lightweight projection — exclude heavy fields from list queries
-const LIST_PROJECTION = {
-  photos: 0,
-};
 
 router.get("/", async (req, res) => {
   try {
     const db = mongoose.connection.db;
 
-    const { sort = "desc", page = 1, limit = 50, cameraType } = req.query;
+    const { sort = "desc", page = 1, limit, cameraType } = req.query;
     const sortOrder = sort === "asc" ? 1 : -1;
     const pageNum = Math.max(1, parseInt(page) || 1);
-    const limitNum = Math.min(2000, Math.max(1, parseInt(limit) || 50));
+    
+    // Allow fetching all if limit is provided as a large number
+    const limitNum = limit ? parseInt(limit) : 50;
     const skip = (pageNum - 1) * limitNum;
 
     const query = {};
@@ -40,7 +38,7 @@ router.get("/", async (req, res) => {
 
     const [reports, totalCount] = await Promise.all([
       collection
-        .find(query, { projection: LIST_PROJECTION })
+        .find(query)
         .sort({ createdAt: sortOrder })
         .skip(skip)
         .limit(limitNum)
